@@ -1,6 +1,8 @@
 # Reinforcement_Learning
 Material for MLT Reinforcement Learning workshops and study sessions.
 
+Also, check out our [MLT repo](https://github.com/Machine-Learning-Tokyo/Deep_Reinforcement_Learning) with top Deep RL resources (tutorials, code, books).
+
 
 # Session #1
 
