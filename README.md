@@ -6,8 +6,7 @@ Also, check out our [MLT repo](https://github.com/Machine-Learning-Tokyo/Deep_Re
 
 # Session #1
 
-### [[Meetup]](https://www.meetup.com/Machine-Learning-Tokyo/events/263347323/)
-### [[Slides and Code]]
+### [[Meetup]](https://www.meetup.com/Machine-Learning-Tokyo/events/263347323/) ### [[Slides and Code]](https://github.com/Machine-Learning-Tokyo/Reinforcement_Learning/tree/master/session%20%231)
 
 
 Presentation
