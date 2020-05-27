@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>K-Armed Bandit</title>
+<!-- Load TensorFlow.js -->
+      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis/dist/tfjs-vis.umd.min.js"></script>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<!-- development version, includes helpful console warnings -->
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+      <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism-tomorrow.min.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.css" />
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-app-bar dark app>
+           <v-img
+              class="mx-2"
+              src="logo.png"
+              max-height="120"
+              max-width="120"
+    contain
+  ></v-img>
+          <v-toolbar-title dark class="mr-2">Reinforcement Learning:</v-toolbar-title>
+          ε Decay, k-Armed Bandit, Exploration vs Exploitation
+        </v-app-bar>
+        <v-content>
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12" lg="9" xl="6" class="mx-auto">
+                <ul>
+                  <li>Scroll down for the Jupyter Notebook</li>
+                  <li>The interactive tools are <span class="font-italic">Work In Progress</span>. The Jupyter Notebook includes the latest features.</li>
+                </ul>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" lg="9" xl="6" class="mx-auto">
+                <h1>Interactive Tools</h1>
+                <v-card
+                  class="mx-auto"
+                  >
+                  <v-card-text>
+                    <p class="display-1 text--primary">
+                    ε Decay
+                    </p>
+                    <v-text-field
+                      id="decayinput"
+                      v-model="epsDecay"
+                      label="Enter a value for the decay"
+                    >
+                    </v-text-field>
+                    <v-btn v-on:click="plotDecay">Plot</v-btn>
+                  </v-card-text>
+                  <div id="decayPlot"></div>
+                  <v-card-actions>
+                    <v-btn color="black" class="white--text" @click="showDecay = !showDecay">Show Python Code</v-btn>
+                  </v-card-actions>
+                   <v-expand-transition>
+                    <div v-show="showDecay">
+                      <v-divider></v-divider>
+                        <v-card-text>
+                          <pre>
+                          <code class="language-python">
+def epsilon(episode,coldness, ep_min=0,ep_max=1):
+  return ep_min + (ep_max - ep_min)*(np.exp(-coldness * episode))
+                          </code>
+                          </pre>
+                        </v-card-text>
+                    </div>
+                  </v-expand-transition>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" lg="9" xl="6" class="mx-auto">
+                <v-card
+                  class="mx-auto"
+                  >
+                  <v-card-text>
+                    <p class="display-1 text--primary">
+                    k-Armed Bandit
+                    </p>
+                  <v-text-field
+                    id="arminput"
+                    v-model="armnumber"
+                    label="How many arms?"
+                    />
+                  </v-text-field>
+                  <v-btn v-on:click="plotBandit">Plot</v-btn>
+                  </v-card-text>
+                  <div id="banditPlot"></div>
+                  <v-card-actions>
+                    <v-btn color="black" class="white--text" @click="showBandit = !showBandit">Show Python Code</v-btn>
+                  </v-card-actions>
+                   <v-expand-transition>
+                    <div v-show="showBandit">
+                      <v-divider></v-divider>
+                        <v-card-text>
+                          <pre>
+                          <code class="language-python">
+def bandit_mean_distribution(K):
+    k_bandit_means = np.random.normal(0.0,1.0,K)
+    return k_bandit_means
+                          </code>
+                          </pre>
+                        </v-card-text>
+                    </div>
+                  </v-expand-transition>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" lg="9" xl="6" class="mx-auto">
+                <v-card
+                  class="mx-auto"
+                  >
+                  <v-card-text>
+                    <p class="display-1 text--primary">
+                    Exploration vs Explotation
+                    </p>
+                  <v-text-field
+                    id="episodesinput"
+                    v-model="episodes"
+                    label="Enter a number of episodes"
+                    >
+                  </v-text-field>
+                    <v-text-field
+                      id="stepsinput"
+                      v-model="steps"
+                      label="Enter a number of steps"
+                      >
+                    </v-text-field>
+                      <v-text-field
+                        id="epsiloninput"
+                        v-model="decay"
+                        label="Enter a value for the decay"
+                        >
+                      </v-text-field>
+                        <v-btn v-on:click="plotExplore">Plot</v-btn>
+                  </v-card-text>
+                  <div id="rewardPlot"></div>
+                  <div id="evsePlot"></div>
+                  <v-card-actions>
+                    <v-btn color="black" class="white--text" @click="showExploreExploit = !showExploreExploit">Show Python Code</v-btn>
+                  </v-card-actions>
+                   <v-expand-transition>
+                    <div v-show="showExploreExploit">
+                      <v-divider></v-divider>
+                        <v-card-text>
+                          <pre>
+                          <code class="language-python">
+def execute(n_episodes,n_steps,decay):
+    n_episodes = 500
+    n_steps = 50
+
+    ep_explore = list()
+    ep_exploit = list()
+    ep_avg_reward = list()
+
+    for ep in range(n_episodes):
+        if (ep+1) % 100 == 0:
+            print("Done with %d episodes" %((ep+1)))
+        explore = 0
+        exploit = 0
+        reward = 0
+        for t in range(n_steps):
+            r = np.random.random()
+            eps = epsilon(ep,decay)
+
+            if r >= eps:
+                # Exploit #
+                exploit+=1
+                a_values = [ np.random.choice(bandit_data[i]) for i in range(10)]
+                #reward_list.append(np.max(a_values))
+                reward += np.max(a_values)
+            else:
+                # Explore #
+                explore+=1
+                action = np.random.choice(range(10))
+                a_value = np.random.choice(bandit_data[action])
+                #actions.append(("explore",action))
+                #reward_list.append(a_value)
+                reward += a_value
+        ep_explore.append(explore)
+        ep_exploit.append(exploit)
+        ep_avg_reward.append(reward/n_steps)
+    return ep_explore, ep_exploit, ep_avg_reward
+                          </code>
+                          </pre>
+                        </v-card-text>
+                    </div>
+                  </v-expand-transition>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" lg="9" xl="6"  class="mx-auto">
+                <h1>Python Notebook</h1>
+                <iframe src="K-ArmBandit_example_ver2.2_incremental.html" width="100%" height="600">
+                </iframe>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-content>
+        <v-footer
+          app
+          color="primary lighten-1"
+          padless
+          absolute
+        >
+            <v-row justify="center" no-gutters>
+            </v-row>
+            <v-divider></v-divider>
+            <v-col
+              class="black  py-2 text-center white--text"
+              cols="12"
+            >
+            Original concept and Python code: Anugraha Sinha(<a href="https://twitter.com/anugrahasinha" class="white--text">@anugrahasinha)</a><br/>
+            Javascript implementation: Francisco Dalla Rosa Soares (<a href="https://twitter.com/dallarosajp" class="white--text">@dallarosajp</a>)
+            </v-col>
+            <v-row justify="center" no-gutters>
+            </v-row>
+            <v-col
+              class="black py-2 text-center white--text"
+              cols="12"
+            >
+            {{ new Date().getFullYear() }} — <strong><a href="https://mltokyo.com" class="white--text">Machine Learning Tokyo</a></strong>
+            </v-col>
+        </v-footer>
+      </v-app>
+    </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/components/prism-python.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/toolbar/prism-toolbar.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+      <script src="script.js"></script>
+
+  </body>
+</html>
